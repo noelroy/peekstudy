@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+
+{% block title %}{{ page_user.profile.get_screen_name }}{% endblock %}
+
+{% block head %}
+  <link href="{% static 'css/profile.css' %}" rel="stylesheet">
+{% endblock head %}
+
+{% block main %}
+  <div class="page-header">
+    <h1>{{ page_user.profile.get_screen_name }} {% if page_user.get_full_name %}<small>({{ page_user.username }})</small>{% endif %}</h1>
+  </div>
+  <div class="profile">
+    <div class="row">
+      <div class="col-md-3 user-profile">
+        <img src="{{ page_user.profile.get_picture }}" class="picture">
+        <ul>
+          {% if page_user.profile.location %}
+          <li><span class="glyphicon glyphicon-map-marker"></span> {{ page_user.profile.location }}</li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </div>
+{% endblock main %}
