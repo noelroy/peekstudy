@@ -8,13 +8,14 @@ from django.conf import settings as django_settings
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from PIL import Image
+from feeds.views import feeds
 
 
 
 # Create your views here.
 def home(request):
     if request.user.is_authenticated():
-        return profile(request,request.user.username)
+        return feeds(request)
     else:
         return render(request, 'core/cover.html')
 

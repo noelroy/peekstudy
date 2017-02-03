@@ -30,6 +30,8 @@ class Profile(models.Model):
                 self.user.username + '.jpg'
             if os.path.isfile(filename):
                 return picture_url
+            else:
+                return no_picture
         except Exception:
             return no_picture
 

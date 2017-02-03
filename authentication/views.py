@@ -11,7 +11,7 @@ def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if not form.is_valid():
-            return render(request, 'authentication/signup.html',
+            return render(request, 'feeds/compose.html',
                           {'form': form})
 
         else:

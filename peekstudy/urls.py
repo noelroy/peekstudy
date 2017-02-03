@@ -13,7 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib import admin
 from authentication import views as peekstudy_auth_views
 from django.contrib.auth import views as auth_views
@@ -42,6 +42,9 @@ urlpatterns = [
 
 #profile url
     url(r'^(?P<username>[^/]+)/$', core_views.profile, name='profile'),
+
+#Feed url
+    url(r'^feeds/', include('feeds.urls')),
 
 
 ]
