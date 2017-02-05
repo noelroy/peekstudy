@@ -40,11 +40,11 @@ urlpatterns = [
         name='save_uploaded_picture'),
     url(r'^settings/password/$', core_views.password, name='password'),
 
-#profile url
-    url(r'^(?P<username>[^/]+)/$', core_views.profile, name='profile'),
-
 #Feed url
     url(r'^feeds/', include('feeds.urls')),
+
+#Profile url
+    url(r'^user/(?P<username>[^/]+)/$', core_views.profile, name='profile'),
 
 
 ]

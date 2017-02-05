@@ -37,19 +37,17 @@
 
               <!-- Items -->
             <div class="collapse navbar-collapse" id="menu">
-                <!--
+
               <ul class="nav navbar-nav">
                 <li>
                   <a href="#" id="notifications" data-container="body" data-toggle="popover" data-placement="bottom" title="Notifications">
                     <span class="glyphicon glyphicon-bell"></span>
                   </a>
                 </li>
-                <li><a href="#">Feed</a></li>
-                <li><a href="#">Articles</a></li>
-                <li><a href="#">Q&A</a></li>
+                <li><a href="{% url 'feeds' %}">Feeds</a></li>
                 <li><a href="#">Network</a></li>
               </ul>
-              -->
+
 
               {% if not hide_search %}
                 <form class="navbar-form navbar-left" role="search" action="#">
@@ -80,7 +78,7 @@
       </header>
       <main>
         <div class="container">
-          <br>
+          <br><br>
           {% block main %}
           {% endblock main %}
         </div>

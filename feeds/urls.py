@@ -3,9 +3,9 @@ from django.conf.urls import url
 from feeds import views
 
 urlpatterns = [
-    url(r'^$', views.feeds, name='feeds'),
-    url(r'^compose/$', views.compose, name='compose'),
 
+    url(r'^compose/$', views.compose, name='compose'),
+    url(r'^$', views.feeds, name='feeds'),
     #url(r'^post/$', views.post, name='post'),
     #url(r'^like/$', views.like, name='like'),
     #url(r'^comment/$', views.comment, name='comment'),

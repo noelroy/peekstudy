@@ -1,4 +1,7 @@
-import json
+
+import os
+
+from django.conf import settings as django_settings
 
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
@@ -7,14 +10,15 @@ from feeds.models import Feed
 
 from peekstudy.decorators import ajax_required
 
-from django.http import (HttpResponse, HttpResponseBadRequest,
-                         HttpResponseForbidden)
+from django.http import (HttpResponse, HttpResponseBadRequest)
 from django.template.context_processors import csrf
 from django.template.loader import render_to_string
 from feeds.forms import PostForm
+from PIL import Image
 
 # Create your views here.
 FEEDS_NUM_PAGES = 10
+
 
 @login_required
 def feeds(request):
@@ -30,23 +34,40 @@ def feeds(request):
         'page': 1,
         })
 
+
 @login_required
 def compose(request):
     if request.method == 'POST':
-        form = PostForm(request.POST)
-        if not form.is_valid():
-            return render(request, 'feeds/compose.html',
-                          {'form': form})
-
-        else:
+        form = PostForm(request.POST or None, request.FILES or None)
+        if form.is_valid():
             post = form.cleaned_data.get('post')
             feed = Feed(user=request.user, post=post)
             feed.save()
+            post_images = django_settings.MEDIA_ROOT + '/post_images/'
+            if not os.path.exists(post_images):
+                os.makedirs(post_images)
+            f = request.FILES['post_image']
+            image_name = feed.date.strftime('%d%m%Y') + str(feed.pk) + '.jpg'
+            filename = post_images + image_name
+            with open(filename, 'wb+') as destination:
+                for chunk in f.chunks():
+                    destination.write(chunk)
+            im = Image.open(filename)
+            width, height = im.size
+            if width > 600:
+                new_width = 600
+                new_height = (height * 600) / width
+                new_size = new_width, new_height
+                im.thumbnail(new_size, Image.ANTIALIAS)
+                im.save(filename)
+                feed.post_image = '/post_images/' + image_name
+                feed.save()
             return redirect('/')
-
     else:
-        return render(request, 'feeds/compose.html',
-                      {'form': PostForm()})
+        form = PostForm()
+    return render(request, 'feeds/compose.html',
+                      {'form': form})
+
 
 def feed(request, pk):
     feed = get_object_or_404(Feed, pk=pk)
