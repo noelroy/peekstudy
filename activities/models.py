@@ -8,11 +8,9 @@ from django.utils.encoding import python_2_unicode_compatible
 
 @python_2_unicode_compatible
 class Activity(models.Model):
-    UP_VOTE = 'U'
-    DOWN_VOTE = 'D'
+    LIKE = 'L'
     ACTIVITY_TYPES = (
-        (UP_VOTE, 'Up Vote'),
-        (DOWN_VOTE, 'Down Vote'),
+        (LIKE, 'Like'),
         )
 
     user = models.ForeignKey(User)

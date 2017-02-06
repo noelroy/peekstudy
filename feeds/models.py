@@ -5,9 +5,11 @@ from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.html import escape
 from django.utils.translation import ugettext_lazy as _
-from PIL import ImageFile
 import bleach
 from activities.models import Activity
+
+from django.dispatch import receiver
+from django.db.models.signals import pre_delete
 
 
 # Create your models here.
@@ -19,8 +21,7 @@ class Feed(models.Model):
     post = models.TextField(max_length=500)
     post_image = models.ImageField(upload_to='post_images',null=True,blank=True)
     parent = models.ForeignKey('Feed', null=True, blank=True)
-    upvotes = models.IntegerField(default=0)
-    downvotes = models.IntegerField(default=0)
+    likes = models.IntegerField(default=0)
     comments = models.IntegerField(default=0)
 
     class Meta:
@@ -39,15 +40,8 @@ class Feed(models.Model):
             feeds = Feed.objects.filter(parent=None)
         return feeds
 
-    def calculate_upvotes(self):
-        likes = Activity.objects.filter(activity_type=Activity.UP_VOTE,
-                                        feed=self.pk).count()
-        self.likes = likes
-        self.save()
-        return self.likes
-
-    def calculate_downvotes(self):
-        likes = Activity.objects.filter(activity_type=Activity.DOWN_VOTE,
+    def calculate_likes(self):
+        likes = Activity.objects.filter(activity_type=Activity.LIKE,
                                         feed=self.pk).count()
         self.likes = likes
         self.save()
@@ -65,29 +59,17 @@ class Feed(models.Model):
         self.save()
         return feed_comment
 
-    def get_upcounts(self):
-        upcounts = Activity.objects.filter(activity_type=Activity.UP_VOTE,
+    def get_likes(self):
+        likes = Activity.objects.filter(activity_type=Activity.LIKE,
                                         feed=self.pk)
-        return upcounts
+        return likes
 
-    def get_upcounters(self):
-        upcounts = self.get_upcounts()
-        upcounters = []
-        for upcount in upcounts:
-            upcounters.append(upcount.user)
-        return upcounters
-
-    def get_downcounts(self):
-        downcounts = Activity.objects.filter(activity_type=Activity.DOWN_VOTE,
-                                        feed=self.pk)
-        return downcounts
-
-    def get_downcounters(self):
-        downcounts = self.get_downcounts()
-        downcounters = []
-        for downcount in downcounts:
-            downcounters.append(downcount.user)
-        return downcounters
+    def get_likers(self):
+        likes = self.get_likes()
+        likers = []
+        for like in likes:
+            likers.append(like.user)
+        return likers
 
     def linkfy_post(self):
         return bleach.linkify(escape(self.post))
