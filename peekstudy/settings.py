@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'core',
     'feeds',
     'activities',
+    'django_cleanup',
     'django.contrib.humanize',
     'django.contrib.admin',
     'django.contrib.auth',

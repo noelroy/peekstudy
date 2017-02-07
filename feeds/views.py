@@ -16,6 +16,7 @@ from django.template.loader import render_to_string
 from feeds.forms import PostForm
 from activities.models import Activity
 from PIL import Image
+from django.core.files import File
 
 # Create your views here.
 FEEDS_NUM_PAGES = 10
@@ -49,8 +50,8 @@ def compose(request):
                 if not os.path.exists(post_images):
                     os.makedirs(post_images)
                 f = request.FILES['post_image']
-                image_name = feed.date.strftime('%d%m%Y') + str(feed.pk) + '.jpg'
-                filename = post_images + image_name
+                image_name = feed.date.strftime('%d%m%Y') + str(feed.pk)
+                filename = post_images + image_name + '_temp.jpg'
                 with open(filename, 'wb+') as destination:
                     for chunk in f.chunks():
                         destination.write(chunk)
@@ -62,8 +63,12 @@ def compose(request):
                     new_size = new_width, new_height
                     im.thumbnail(new_size, Image.ANTIALIAS)
                     im.save(filename)
-                feed.post_image = '/post_images/' + image_name
-                feed.save()
+                reopen = open(filename, 'rb')
+                django_file = File(reopen)
+                feed.post_image.save(image_name + '.jpg', django_file, save=True)
+                django_file.close()
+                reopen.close()
+                os.remove(filename)
             finally:
                 return redirect('/')
     else:
