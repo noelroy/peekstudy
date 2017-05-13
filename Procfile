@@ -1,0 +1,1 @@
+web: gunicorn peekstudy.wsgi
