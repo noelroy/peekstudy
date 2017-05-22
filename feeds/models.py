@@ -10,6 +10,7 @@ from activities.models import Activity
 
 from django.dispatch import receiver
 from django.db.models.signals import pre_delete
+import markdown
 
 
 # Create your models here.
@@ -72,7 +73,7 @@ class Feed(models.Model):
         return likers
 
     def linkfy_post(self):
-        return bleach.linkify(escape(self.post))
+        return markdown.markdown(self.post, safe_mode='escape')
 
     def get_comments(self):
         return FeedComment.objects.filter(feed=self).order_by('date')

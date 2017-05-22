@@ -8,6 +8,7 @@ from django.utils.encoding import python_2_unicode_compatible
 
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.core.urlresolvers import reverse
 
 # Create your models here.
 @python_2_unicode_compatible
@@ -20,6 +21,9 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.username
+
+    def get_absolute_url(self):
+        return reverse('profile', kwargs={"username":self.user.username});
 
     def get_picture(self):
         no_picture = 'http://trybootcamp.vitorfs.com/static/img/user.png'

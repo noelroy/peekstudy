@@ -11,15 +11,9 @@
       {% include 'core/partial_settings_menu.html' with active='profile' %}
     </div>
     <div class="col-md-9">
-      {% if messages %}
-        {% for message in messages %}
-          <div class="alert alert-success alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{ message }}
-          </div>
-        {% endfor %}
-      {% endif %}
+      {% include 'messages.html' %}
       <h3 style="margin-top: 0">Edit Profile</h3>
+      <hr>
       <form role="form" class="form-horizontal" method="post" action="{% url 'settings' %}">
         {% csrf_token %}
         {% for field in form.visible_fields %}

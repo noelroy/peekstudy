@@ -4,6 +4,7 @@
 
 {% block head %}
 <link href="{% static 'css/feeds.css' %}" rel="stylesheet">
+{{ form.media }}
 {% endblock head %}
 
 {% block main %}
@@ -14,6 +15,7 @@
 </ol>
 
 <h3>Compose</h3>
+<hr>
 <form role="form" action="{% url 'compose' %}" method="post"
       enctype="multipart/form-data">
     {% csrf_token %}
